@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<style>
+td { font: 12px sans-serif; border: 1px solid black;}
+tr.filtered { color: #ccc; }
+tr.reserved { background-color: #fee; }
+span.q { background-color: #ff0; font-weight: bold; }
+</style>
+</head>
+<body>
+<p><button id="show-hidden-prg">toggle filtered programs</button></p>
+<table>
+<thead>
+<tr><th rowspan="2">time</th><th rowspan="2">channel</th><th>title</th><th>description</th></tr>
+</thead>
+<tbody>
+{% for row in rows %}<tr class="pg{%if row.filtered %} filtered{% endif %}{%if row.reserved %} reserved{% endif %}">
+  <td>{{row.res.starttime | date:"%m/%d %a %H:%M"}}</td>
+  <td>{{row.res.name}}</td>
+  <td>{{row.matched}}</td>
+  <td>{{row.res.description}}</td>
+</tr>{% endfor %}
+</tbody>
+</table>
+
+<script>
+$(function() {
+$('tr.filtered').hide();
+
+$('#show-hidden-prg').click(function() {
+$('tr.filtered').toggle();
+});
+
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+---
+database_url: mysql2://epgrec:YOUR_EPGREC_DB_PASSWORD@localhost/epgrec
