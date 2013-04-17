@@ -21,9 +21,10 @@ configure do
     join(Sequel.as(:Recorder_channelTbl, :ch), :p__channel_id => :ch__id).
     join(Sequel.as(:Recorder_categoryTbl, :c), :p__category_id => :c__id).
     left_join(Sequel.as(:Recorder_reserveTbl, :r), :r__program_id => :p__id).
-    where(:c__name_en => "anime").where{p__starttime >= Time.now}.
+    where(:c__name_en => :$category_name).where{p__starttime > :$starttime}.
     order(Sequel.desc(:p__starttime), Sequel.asc(:ch__channel_disc)).
-    select(:ch__name, :ch__channel_disc, :p__starttime, :p__title, :p__description, :r__id)
+    select(:ch__name, :ch__channel_disc, :p__starttime, :p__title, :p__description, :r__id).
+    prepare(:select, :select_programs)
   set :programs, programs
 
   conditions_re = File.open(KEYWORDS_FILE, "rb:UTF-8") do |file|
@@ -38,7 +39,7 @@ get "/" do
 
   locals = { "rows" => [] }
 
-  settings.programs.each do |row|
+  settings.programs.call({:category_name => "anime", :starttime => Time.now}).each do |row|
     keys = row.keys.map{|k| k.to_s }
     res = Hash[*keys.zip(row.values).flatten]
 
