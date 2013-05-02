@@ -6,6 +6,7 @@ require 'bundler'
 
 Bundler.require
 
+require './lib/liquid-patch'
 require 'yaml'
 
 KEYWORDS_FILE = 'anime-kw.txt'
@@ -47,7 +48,7 @@ get "/" do
       "res" => res,
       "reserved" => !row[:id].nil?,
       "filtered" => !conditions_re.match(row[:title]).nil?,
-      "matched" => row[:title].gsub(conditions_re){|m| "<span class='q'>#{m}</span>" }
+      "matched" => row[:title].gsub(conditions_re){|m| "<span class=\"q\">#{m}</span>" }
     }
   end
   liquid :index, :locals => locals
