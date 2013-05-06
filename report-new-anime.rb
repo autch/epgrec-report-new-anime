@@ -38,7 +38,7 @@ end
 get "/" do
   conditions_re = settings.conditions_re
 
-  locals = { "rows" => [] }
+  locals = { "rows" => [], "baseuri" => request.script_name }
 
   settings.programs.call({:category_name => "anime", :starttime => Time.now}).each do |row|
     keys = row.keys.map{|k| k.to_s }

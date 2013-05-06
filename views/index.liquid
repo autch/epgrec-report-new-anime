@@ -1,32 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<style>
-body { font-family: sans-serif; }
-td { font: 12px sans-serif; border: 1px solid black;}
-.f { color: #ccc; }
-.r { background-color: #fee; }
-span.q { background-color: #ff0; font-weight: bold; }
-</style>
-</head>
-<body>
-<p><label><input type="checkbox" id="show-hidden-prg" checked="checked"><span class="f q">無視番組</span>を隠す</label>
-<label><input type="checkbox" id="show-reserved-prg"><span class="r">予約済番組</span>を隠す</label>
-</p>
-<table>
-<thead><tr><th>開始時刻</th><th>チャンネル</th><th>番組名</th><th>番組内容</th></tr></thead>
-<tbody>
-{% for row in rows %}<tr class="{%if row.filtered %}f{% endif %}{%if row.reserved %} r{% endif %}"><td>{{row.res.starttime | date:"%m/%d %a %H:%M"}}</td><td>{{row.res.name}}</td><td>{{row.matched}}</td><td>{{row.res.description}}</td></tr>
-{% endfor %}</tbody>
-</table>
-<script>
-$(function() {
-  $('tr.f').hide();
-  $('#show-hidden-prg').change(function() { $('tr.f').toggle(); });
-  $('#show-reserved-prg').change(function() { $('tr.r').toggle(); });
-});
-</script>
-</body>
-</html>
+<div class="container">
+  <table class="table table-bordered table-condensed">
+    <thead><tr><th>開始時刻</th><th>チャンネル</th><th>番組名</th><th>番組内容</th></tr></thead>
+    <tbody>
+      {% for row in rows %}<tr class="{%if row.filtered %}f{% endif %}{%if row.reserved %} r{% endif %}"><td>{{row.res.starttime | date:"%m/%d %a %H:%M"}}</td><td>{{row.res.name}}</td><td>{{row.matched}}</td><td>{{row.res.description}}</td></tr>
+      {% endfor %}</tbody>
+  </table>
+</div>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="{{baseuri}}/css/bootstrap.min.css">
+    <style>
+      body { font-family: sans-serif; padding-top: 60px; padding-bottom: 40px; }
+      table.table { font-size: 12px; }
+      .f { color: #ccc; }
+      .r { background-color: #fee; }
+      .q { background-color: #ff0; font-weight: bold; }
+    </style>
+    <link rel="stylesheet" href="{{baseuri}}/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="{{baseuri}}/css/main.css">
+    <script src="{{baseuri}}/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand active" href="#">アニメ予約リスト</a>
+          <ul class="nav">
+	    <li><a href="#" id="show-hidden-prg"><span class="f q">無視番組</span>を隠す</a></li>
+	    <li><a href="#" id="show-reserved-prg"><span class="r">予約済番組</span>を隠す</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    {{content}}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{baseuri}}/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+    <script src="{{baseuri}}/js/vendor/bootstrap.min.js"></script>
+    <script src="{{baseuri}}/js/main.js"></script>
+  </body>
+</html>
