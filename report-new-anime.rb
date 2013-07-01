@@ -29,7 +29,7 @@ configure do
   set :programs, programs
 
   conditions_re = File.open(KEYWORDS_FILE, "rb:UTF-8") do |file|
-    keywords = file.readlines.map{|i| i.chomp }
+    keywords = file.readlines.map{|i| i.chomp }.reject{|i| i.strip.length == 0 }
     Regexp.union(*keywords.map{|kw| Regexp.quote(kw) })
   end
   set :conditions_re, conditions_re
