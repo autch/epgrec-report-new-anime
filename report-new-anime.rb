@@ -24,7 +24,7 @@ configure do
     left_join(Sequel.as(:Recorder_reserveTbl, :r), :r__program_id => :p__id).
     where(:c__name_en => :$category_name).where{p__starttime > :$starttime}.
     order(Sequel.desc(:p__starttime), Sequel.asc(:ch__channel_disc)).
-    select(:ch__name, :ch__channel_disc, :p__starttime, :p__title, :p__description, :r__id).
+    select(:ch__name, :ch__channel_disc, :p__starttime, :p__title, :p__description, :r__id, :ch__type).
     prepare(:select, :select_programs)
   set :programs, programs
 
@@ -51,5 +51,10 @@ get "/" do
       "matched" => row[:title].gsub(conditions_re){|m| "<span class=\"q\">#{m}</span>" }
     }
   end
+  locals["count"] = {
+    "all" => locals["rows"].count,
+    "reserved" => locals["rows"].count{|i| i["reserved"] },
+    "filtered" => locals["rows"].count{|i| i["filtered"] }
+  }
   liquid :index, :locals => locals
 end

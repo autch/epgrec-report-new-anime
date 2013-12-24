@@ -23,16 +23,22 @@
       <div class="navbar-inner">
         <div class="container">
           <a class="brand active" href="#">アニメ予約リスト</a>
-          <ul class="nav">
-	    <li><a href="#" id="show-hidden-prg"><span class="f q">無視番組</span>を隠す</a></li>
-	    <li><a href="#" id="show-reserved-prg"><span class="r">予約済番組</span>を隠す</a></li>
-          </ul>
+          <form class="navbar-form form-inline navbar-left">
+            <div class="form-group checkbox">
+            <label><input type="checkbox" class="form-control hide-prog-status" data-prog-status="f"><span class="f q">無視番組</span></label>
+            <label><input type="checkbox" class="form-control hide-prog-status" data-prog-status="r"><span class="r">予約済番組</span></label>
+            <label><input type="checkbox" class="form-control hide-ch-type" data-ch-type="BS" checked>BS</label>
+            <label><input type="checkbox" class="form-control hide-ch-type" data-ch-type="CS" checked>CS</label>
+            <label><input type="checkbox" class="form-control hide-ch-type" data-ch-type="GR" checked>地上波</label>
+            </div>
+          </form>
+	    <p class="navbar-text">全 {{count.all}} 件（予約{{count.reserved}}件、無視{{count.filtered}}件）</p>
         </div>
       </div>
     </div>
     {{content}}
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="{{baseuri}}/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{baseuri}}/js/vendor/jquery-2.0.3.min.js"><\/script>')</script>
     <script src="{{baseuri}}/js/vendor/bootstrap.min.js"></script>
     <script src="{{baseuri}}/js/main.js"></script>
   </body>
