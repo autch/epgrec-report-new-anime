@@ -23,6 +23,7 @@ configure do
     join(Sequel.as(:Recorder_categoryTbl, :c), :p__category_id => :c__id).
     left_join(Sequel.as(:Recorder_reserveTbl, :r), :r__program_id => :p__id).
     where(:c__name_en => :$category_name).where{p__starttime > :$starttime}.
+    where(:ch__skip => 0).
     order(Sequel.desc(:p__starttime), Sequel.asc(:ch__channel_disc)).
     select(:ch__name, :ch__channel_disc, :p__starttime, :p__title, :p__description, :r__id, :ch__type).
     prepare(:select, :select_programs)

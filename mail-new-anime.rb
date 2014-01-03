@@ -30,8 +30,9 @@ programs = DB[Sequel.as(:Recorder_programTbl, :p)].
   left_join(Sequel.as(:Recorder_reserveTbl, :r), :r__program_id => :p__id).
   where(:c__name_en => "anime").where{p__starttime >= Time.now}.
   where(:p__title.like('%【新】%')).
+  where(:ch__skip => 0).
   order(Sequel.desc(:p__starttime), Sequel.asc(:ch__channel_disc)).
-  select(:ch__name, :ch__channel_disc, :p__starttime, :p__title, :p__description, :r__id)
+  select(:ch__name, :ch__channel_disc, :p__starttime, :p__title, :p__description, :r__id, :ch__type)
 
 exit if programs.count == 0
 
@@ -50,7 +51,7 @@ mail.deliver!
 
 __END__
 <% programs.each do |row| %>
-<%= row[:starttime].strftime("%m/%d %H:%M") %> <%= row[:name] %> <%= row[:id] ? "【予約済】" : "" %>
+<%= row[:starttime].strftime("%m/%d %H:%M") %> [<%= row[:type] %>] <%= row[:name] %> <%= row[:id] ? "【予約済】" : "" %>
 <%= row[:title] %>
 
 <%= NKF.nkf("-w -f74", row[:description]) %>
