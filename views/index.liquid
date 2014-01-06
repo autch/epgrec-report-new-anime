@@ -1,8 +1,8 @@
-<div class="container">
+<div class="container table-responsive">
   <table class="table table-bordered table-condensed">
     <thead><tr><th>開始時刻</th><th>チャンネル</th><th>番組名</th><th>番組内容</th></tr></thead>
     <tbody>
       {% for row in rows %}<tr class="{%if row.filtered %}f{% endif %}{%if row.reserved %} r{% endif %} prog-{{row.res.type}}"><td>{{row.res.starttime | date:"%m/%d %a %H:%M"}}</td><td>[{{row.res.type}}] {{row.res.name}}</td><td>{{row.matched}}</td><td>{{row.res.description}}</td></tr>
-      {% endfor %}</tbody>
+{% endfor %}</tbody>
   </table>
 </div>

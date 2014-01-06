@@ -55,7 +55,12 @@ get "/" do
   locals["count"] = {
     "all" => locals["rows"].count,
     "reserved" => locals["rows"].count{|i| i["reserved"] },
-    "filtered" => locals["rows"].count{|i| i["filtered"] }
+    "filtered" => locals["rows"].count{|i| i["filtered"] },
+    "by_type" => {
+      "BS" => locals["rows"].count{|i| i["res"]["type"] == "BS" },
+      "CS" => locals["rows"].count{|i| i["res"]["type"] == "CS" },
+      "GR" => locals["rows"].count{|i| i["res"]["type"] == "GR" },
+    },
   }
   liquid :index, :locals => locals
 end

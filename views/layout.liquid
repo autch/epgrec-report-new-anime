@@ -37,9 +37,9 @@
 	      <label class="btn btn-default"><input type="checkbox" value="r"><span class="r">予約済番組</span> ({{count.reserved}})</label>
 	    </div>
 	    <div class="form-group btn-group" id="hide-ch-type" data-toggle="buttons">
-	      <label class="btn btn-default"><input type="checkbox" value="BS" checked>BS</label>
-	      <label class="btn btn-default"><input type="checkbox" value="CS" checked>CS</label>
-	      <label class="btn btn-default"><input type="checkbox" value="GR" checked>地上波</label>
+	      <label class="btn btn-default"><input type="checkbox" value="BS" checked>BS ({{count.by_type.BS}})</label>
+	      <label class="btn btn-default"><input type="checkbox" value="CS" checked>CS ({{count.by_type.CS}})</label>
+	      <label class="btn btn-default"><input type="checkbox" value="GR" checked>地上波 ({{count.by_type.GR}})</label>
 	    </div>
 	  </form>
 	  <p class="navbar-text">全 {{count.all}} 件</p>
