@@ -3,43 +3,53 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title></title>
+    <title>アニメ予約状況</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="{{baseuri}}/css/bootstrap.min.css">
     <style>
-      body { font-family: sans-serif; padding-top: 60px; padding-bottom: 40px; }
+      body { font-family: sans-serif; padding-top: 60px; padding-bottom: 20px; }
       table.table { font-size: 12px; }
       .f { color: #ccc; }
       .r { background-color: #fee; }
       .q { background-color: #ff0; font-weight: bold; }
+      label.btn input[type='checkbox'] { display: none; }
     </style>
-    <link rel="stylesheet" href="{{baseuri}}/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="{{baseuri}}/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="{{baseuri}}/css/main.css">
     <script src="{{baseuri}}/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
   </head>
   <body>
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand active" href="#">アニメ予約リスト</a>
-          <form class="navbar-form form-inline navbar-left">
-            <div class="form-group checkbox">
-            <label><input type="checkbox" class="form-control hide-prog-status" data-prog-status="f"><span class="f q">無視番組</span></label>
-            <label><input type="checkbox" class="form-control hide-prog-status" data-prog-status="r"><span class="r">予約済番組</span></label>
-            <label><input type="checkbox" class="form-control hide-ch-type" data-ch-type="BS" checked>BS</label>
-            <label><input type="checkbox" class="form-control hide-ch-type" data-ch-type="CS" checked>CS</label>
-            <label><input type="checkbox" class="form-control hide-ch-type" data-ch-type="GR" checked>地上波</label>
-            </div>
-          </form>
-	    <p class="navbar-text">全 {{count.all}} 件（予約{{count.reserved}}件、無視{{count.filtered}}件）</p>
-        </div>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+	<div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">アニメ予約リスト</a>
+	</div>
+	<div class="navbar-collapse collapse">
+	  <form class="navbar-form navbar-left form-inline">
+	    <div class="form-group btn-group" id="hide-prog-status" data-toggle="buttons">
+	      <label class="btn btn-default"><input type="checkbox" value="f"><span class="f q">無視番組</span> ({{count.filtered}})</label>
+	      <label class="btn btn-default"><input type="checkbox" value="r"><span class="r">予約済番組</span> ({{count.reserved}})</label>
+	    </div>
+	    <div class="form-group btn-group" id="hide-ch-type" data-toggle="buttons">
+	      <label class="btn btn-default"><input type="checkbox" value="BS" checked>BS</label>
+	      <label class="btn btn-default"><input type="checkbox" value="CS" checked>CS</label>
+	      <label class="btn btn-default"><input type="checkbox" value="GR" checked>地上波</label>
+	    </div>
+	  </form>
+	  <p class="navbar-text">全 {{count.all}} 件</p>
+	</div>
       </div>
-    </div>
+    </nav>
     {{content}}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="{{baseuri}}/js/vendor/jquery-2.0.3.min.js"><\/script>')</script>
-    <script src="{{baseuri}}/js/vendor/bootstrap.min.js"></script>
-    <script src="{{baseuri}}/js/main.js"></script>
+      <script src="{{baseuri}}/js/vendor/bootstrap.min.js"></script>
+      <script src="{{baseuri}}/js/main.js"></script>
   </body>
 </html>
