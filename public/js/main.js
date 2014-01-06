@@ -10,6 +10,7 @@ $(function() {
 	if($('#hide-prog-status input[value="r"]').prop("checked")) {
 	    $('tr.r').hide();
 	}
+	$('#count-shown').text($('table tbody tr:visible').length);
     };
 
     var initialize_toggle = function(index, elem) {
