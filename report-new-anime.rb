@@ -9,8 +9,6 @@ Bundler.require
 require './lib/liquid-patch'
 require 'yaml'
 
-KEYWORDS_FILE = 'anime-kw.txt'
-
 configure do
   db_config = YAML.load(File.read(File.join(File.dirname(__FILE__), "database.yaml")))
   set :database, db_config["database_url"]
@@ -29,15 +27,12 @@ configure do
     prepare(:select, :select_programs)
   set :programs, programs
 
-  conditions_re = File.open(KEYWORDS_FILE, "rb:UTF-8") do |file|
-    keywords = file.readlines.map{|i| i.chomp }.reject{|i| i.strip.length == 0 }
-    Regexp.union(*keywords.map{|kw| Regexp.quote(kw) })
-  end
-  set :conditions_re, conditions_re
+  ignore_keywords = database[:ignore_keywords].where(:enabled => 1).select(:keyword).prepare(:select, :select_ignore_keywords)
+  set :ignore_keywords, ignore_keywords
 end
 
 get "/" do
-  conditions_re = settings.conditions_re
+  conditions_re = Regexp.union(settings.ignore_keywords.call().map{|row| Regexp.quote(row[:keyword]) })
 
   locals = { "rows" => [], "baseuri" => request.script_name }
 

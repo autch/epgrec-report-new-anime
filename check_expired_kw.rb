@@ -12,8 +12,6 @@ require 'sequel'
 require 'yaml'
 require 'logger'
 
-KEYWORDS_FILE = 'anime-kw.txt'
-
 db_config = YAML.load(File.read(File.join(File.dirname(__FILE__), "database.yaml")))
 
 DB = Sequel.connect(db_config["database_url"])
@@ -24,41 +22,52 @@ DB["SET NAMES utf8"]
 keywords = DB[:Recorder_keywordTbl].select(:keyword).map{|i| i[:keyword] }
 kw_count = Hash[*keywords.zip([0] * keywords.count).flatten]
 
-ignore_kw = File.open(KEYWORDS_FILE, "rb:UTF-8") do |file|
-  file.readlines.map{|i| i.chomp }.reject{|i| i.strip.length == 0 }
-end
+ignore_kw = DB[:ignore_keywords].where(:enabled => 1).select(:keyword).map{|i| i[:keyword] }
 ignore_count = Hash[*ignore_kw.zip([0] * ignore_kw.count).flatten]
 
 DB[:Recorder_programTbl].select(:title, :description).each do |row|
-  kw = keywords.detect{|k| row[:title].include?(k) || row[:description].include?(k) }
-  kw_count[kw] += 1 if kw
+  kws = keywords.select{|k| 
+    row[:title].include?(k) || row[:description].include?(k)
+  }
+  kws.each{|kw| kw_count[kw] += 1 } if kws
 
-  kw = ignore_kw.detect{|k| row[:title].include?(k) || row[:description].include?(k) }
-  ignore_count[kw] += 1 if kw
+  kws = ignore_kw.select{|k|
+    row[:title].include?(k) || row[:description].include?(k)
+  }
+  kws.each{|kw| ignore_count[kw] += 1 } if kws
 end
 
-#puts "予約キーワード,一致回数"
-#kw_count.sort_by{|i| i[1] }.each do |r|
-#  printf "%s,%d\n", r[0], r[1]
-#end
+# puts "予約キーワード,一致回数"
+# kw_count.sort_by{|i| i[1] }.each do |r|
+#   printf "%s,%d\n", r[0], r[1]
+# end
 
-#puts
-#puts "無視キーワード,一致回数"
-#ignore_count.sort_by{|i| i[1] }.each do |r|
-#  printf "%s,%d\n", r[0], r[1]
-#end
+# puts
+# puts "無視キーワード,一致回数"
+# ignore_count.sort_by{|i| i[1] }.each do |r|
+#   printf "%s,%d\n", r[0], r[1]
+# end
 
 #pp kw_count
 #pp ignore_count
 
 puts "【一致なし予約キーワード】"
-puts kw_count.delete_if{|k, v| v > 0 }.keys.join("\n")
+puts kw_count.select{|k, v| v == 0 }.keys.join("\n")
 
 puts
 puts "【一致なし無視キーワード】"
-not_matched = ignore_count.delete_if{|k, v| v > 0 }.keys
-puts not_matched.join("\n")
+puts ignore_count.select{|k, v| v == 0 }.keys.join("\n")
 
-puts
-re = Regexp.union(not_matched)
-printf "$ sed -i.bak -re '%s{d}' anime-kw.txt\n", re.inspect
+overkill_ignores = []
+
+DB[:Recorder_programTbl].select(:title, :description).each do |row|
+  kws = ignore_kw.select{|k|
+    row[:title].include?(k) || row[:description].include?(k)
+  }
+  if kws.count > 1 then
+    overkill_ignores << kws
+  end
+end
+
+puts "【１番組に複数キーワードがマッチ】"
+overkill_ignores.uniq.each{|kws| p kws }
