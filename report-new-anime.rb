@@ -8,6 +8,7 @@ Bundler.require
 
 require './lib/liquid-patch'
 require 'yaml'
+require 'json'
 
 configure do
   db_config = YAML.load(File.read(File.join(File.dirname(__FILE__), "database.yaml")))
@@ -44,6 +45,7 @@ get "/" do
       "res" => res,
       "reserved" => !row[:id].nil?,
       "filtered" => !conditions_re.match(row[:title]).nil?,
+      "available" => row[:id].nil? && conditions_re.match(row[:title]).nil?,
       "matched" => row[:title].gsub(conditions_re){|m| "<span class=\"q\">#{m}</span>" }
     }
   end
@@ -51,6 +53,7 @@ get "/" do
     "all" => locals["rows"].count,
     "reserved" => locals["rows"].count{|i| i["reserved"] },
     "filtered" => locals["rows"].count{|i| i["filtered"] },
+    "available" => locals["rows"].count{|i| i["available"] },
     "by_type" => {
       "BS" => locals["rows"].count{|i| i["res"]["type"] == "BS" },
       "CS" => locals["rows"].count{|i| i["res"]["type"] == "CS" },
@@ -58,4 +61,13 @@ get "/" do
     },
   }
   liquid :index, :locals => locals
+end
+
+post "/add-ignore-keyword" do
+  content_type "application/javascript"
+
+  keyword = params[:keyword]
+  values = { "keyword" => keyword, "enabled" => 1 }
+
+  database[:ignore_keywords].insert(values)
 end

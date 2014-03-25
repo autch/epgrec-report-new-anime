@@ -10,6 +10,9 @@ $(function() {
 	if($('#hide-prog-status input[value="r"]').prop("checked")) {
 	    $('tr.r').hide();
 	}
+	if($('#hide-prog-status input[value="a"]').prop("checked")) {
+	    $('tr.a').hide();
+	}
 	$('#count-shown').text($('table tbody tr:visible').length);
     };
 
@@ -21,10 +24,31 @@ $(function() {
     $('#hide-ch-type input').each(initialize_toggle);
     $('#hide-prog-status input').each(initialize_toggle);
 
-
     update_visibility();
 
     $("#hide-prog-status").on("change", "input", update_visibility);
     $("#hide-ch-type").on("change", "input", update_visibility);
+
+    $('button.add-ignore-keyword').on("click", function() {
+	$('#keyword').val($(this).attr("data-add-keyword")).select();
+	$('#keyword').select();
+	//	$('#add-keyword').modal("show");
+    });
+
+
+    $('#keyword').on("focus", function() {
+    });
+
+    $('#add-keyword form').on("submit", function() {
+	$.post($(this).attr("action"), {
+	    keyword: $('#keyword').val(),
+	}, function(data, status, xhr) {
+	    console.log($('#keyword').val());
+	    $('#add-keyword').modal("hide");
+	    location.reload(true);
+	});
+
+	return false;
+    });
 });
 

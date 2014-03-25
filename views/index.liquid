@@ -2,7 +2,34 @@
   <table class="table table-bordered table-condensed">
     <thead><tr><th>開始時刻</th><th>チャンネル</th><th>番組名</th><th>番組内容</th></tr></thead>
     <tbody>
-      {% for row in rows %}<tr class="{%if row.filtered %}f{% endif %}{%if row.reserved %} r{% endif %} prog-{{row.res.type}}"><td>{{row.res.starttime | date:"%m/%d %a %H:%M"}}</td><td>[{{row.res.type}}] {{row.res.name}}</td><td>{{row.matched}}</td><td>{{row.res.description}}</td></tr>
-{% endfor %}</tbody>
+      {% for row in rows %}
+      <tr class="{%if row.available %}a {% endif %}{%if row.filtered %}f {% endif %}{%if row.reserved %}r {% endif %}prog-{{row.res.type}}">
+	<td>{{row.res.starttime | date:"%m/%d %a %H:%M"}}</td>
+	<td>[{{row.res.type}}] {{row.res.name}}</td>
+	<td>{{row.matched}}{%unless row.filtered or row.reserved %} <button type="button" class="add-ignore-keyword btn btn-default btn-xs" data-toggle="modal" data-target="#add-keyword" data-add-keyword="{{row.matched}}"><span class="glyphicon glyphicon-remove"></span></button>{% endunless %}</td>
+	<td>{{row.res.description}}</td>
+      </tr>{% endfor %}</tbody>
   </table>
+</div>
+
+<div class="modal" id="add-keyword" tabindex="-1" role="dialog" aria-labelledby="add-keyword-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form role="form" action="{{baseuri}}/add-ignore-keyword">
+	<div class="modal-header">
+	  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	  <h4 class="modal-title" id="add-keyword-label">キーワードを追加</h4>
+	</div>
+	<div class="modal-body">
+	  <div class="form-group">
+	    <label for="keyword">無視キーワード</label>
+	    <input type="text" class="form-control" id="keyword">
+	  </div>
+	</div>
+	<div class="modal-footer">
+          <button type="submit" class="btn btn-primary">追加</button>
+	</div>
+      </form>
+    </div>
+  </div>
 </div>

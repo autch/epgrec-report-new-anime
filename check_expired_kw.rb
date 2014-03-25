@@ -25,7 +25,7 @@ kw_count = Hash[*keywords.zip([0] * keywords.count).flatten]
 ignore_kw = DB[:ignore_keywords].where(:enabled => 1).select(:keyword).map{|i| i[:keyword] }
 ignore_count = Hash[*ignore_kw.zip([0] * ignore_kw.count).flatten]
 
-DB[:Recorder_programTbl].select(:title, :description).each do |row|
+DB[:Recorder_programTbl].where("starttime > NOW()").select(:title, :description).each do |row|
   kws = keywords.select{|k| 
     row[:title].include?(k) || row[:description].include?(k)
   }
@@ -69,5 +69,6 @@ DB[:Recorder_programTbl].select(:title, :description).each do |row|
   end
 end
 
+puts
 puts "【１番組に複数キーワードがマッチ】"
 overkill_ignores.uniq.each{|kws| p kws }
