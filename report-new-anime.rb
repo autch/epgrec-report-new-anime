@@ -46,7 +46,9 @@ get "/" do
       "reserved" => !row[:id].nil?,
       "filtered" => !conditions_re.match(row[:title]).nil?,
       "available" => row[:id].nil? && conditions_re.match(row[:title]).nil?,
-      "matched" => row[:title].gsub(conditions_re){|m| "<span class=\"q\">#{m}</span>" }
+      "matched" => row[:title].gsub(conditions_re){|m| "<span class=\"q\">#{m}</span>" },
+      "new" => /【新】/ =~ row[:title],
+      "last" => /【終】/ =~ row[:title]
     }
   end
   locals["count"] = {
