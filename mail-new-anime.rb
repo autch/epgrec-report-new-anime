@@ -29,7 +29,7 @@ programs = DB[Sequel.as(:Recorder_programTbl, :p)].
   join(Sequel.as(:Recorder_categoryTbl, :c), :p__category_id => :c__id).
   left_join(Sequel.as(:Recorder_reserveTbl, :r), :r__program_id => :p__id).
   where(:c__name_en => "anime").where{p__starttime >= Time.now}.
-  where(:p__title.like('%【新】%')).
+  where(Sequel.like(:p__title, '%【新】%')).
   where(:ch__skip => 0).
   order(Sequel.desc(:p__starttime), Sequel.asc(:ch__channel_disc)).
   select(:ch__name, :ch__channel_disc, :p__starttime, :p__title, :p__description, :r__id, :ch__type)
