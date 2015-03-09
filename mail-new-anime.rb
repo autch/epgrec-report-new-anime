@@ -31,7 +31,7 @@ programs = DB[Sequel.as(:Recorder_programTbl, :p)].
   where(:c__name_en => "anime").where{p__starttime >= Time.now}.
   where(Sequel.like(:p__title, '%【新】%')).
   where(:ch__skip => 0).
-  order(Sequel.desc(:p__starttime), Sequel.asc(:ch__channel_disc)).
+  order(Sequel.asc(:p__starttime), Sequel.asc(:ch__channel_disc)).
   select(:ch__name, :ch__channel_disc, :p__starttime, :p__title, :p__description, :r__id, :ch__type)
 
 exit if programs.count == 0

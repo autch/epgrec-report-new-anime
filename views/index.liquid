@@ -2,13 +2,14 @@
   <table class="table table-bordered table-condensed">
     <thead><tr><th>開始時刻</th><th>チャンネル</th><th>番組名</th><th>番組内容</th></tr></thead>
     <tbody>
-      {% for row in rows %}
+      {% for row in rows %}{% strip %}
       <tr class="{%if row.available %}a {% endif %}{%if row.filtered %}f {% endif %}{%if row.reserved %}r {% endif %}prog-{{row.res.type}} {%if row.new %}n {% endif %}{% if row.last %}l {% endif %}">
 	<td>{{row.res.starttime | date:"%m/%d %a %H:%M"}}</td>
 	<td>[{{row.res.type}}] {{row.res.name}}</td>
 	<td>{{row.matched}}{%unless row.filtered or row.reserved %} <button type="button" class="add-ignore-keyword btn btn-default btn-xs" data-toggle="modal" data-target="#add-keyword" data-add-keyword="{{row.matched}}"><span class="glyphicon glyphicon-remove"></span></button>{% endunless %}</td>
 	<td>{{row.res.description}}</td>
-      </tr>{% endfor %}</tbody>
+      </tr>{% endstrip %}
+{% endfor %}</tbody>
   </table>
 </div>
 

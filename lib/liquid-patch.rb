@@ -15,3 +15,16 @@ module Liquid
     end
   end
 end
+
+class Strip < Liquid::Block
+  def initialize(tag_name, markup, tokens)
+    super
+  end
+
+  def render(context)
+    super.split(/\r?\n/).map{|line| line.strip }.join("")
+  end
+end
+
+Liquid::Template.register_tag('strip', Strip)
+
