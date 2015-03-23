@@ -32,6 +32,32 @@ configure do
   set :ignore_keywords, ignore_keywords
 end
 
+def determine_classes(row)
+  classes = []
+
+  classes << "a" if row["available"]
+  classes << "f" if row["filtered"]
+  classes << "r" if row["reserved"]
+  classes << "prog-#{row['res']['type']}"
+  classes << "n" if row["new"]
+  classes << "l" if row["last"]
+  classes << "nl" if (row["new"] || row["last"])
+
+  classes.join(' ')
+end
+
+def determine_captions(row)
+  captions = []
+
+  #captions << { class: ""} if row["available"]
+  captions << { "class"=> "glyphicon glyphicon-remove", "caption"=> "無視" } if row["filtered"]
+  captions << { "class"=> "glyphicon glyphicon-ok", "caption"=> "予約済" } if row["reserved"]
+  captions << { "class"=> "glyphicon glyphicon-step-backward", "caption"=> "新番組" } if row["new"]
+  captions << { "class"=> "glyphicon glyphicon-step-forward", "caption"=> "最終回" } if row["last"]
+
+  captions
+end
+
 get "/" do
   conditions_re = Regexp.union(settings.ignore_keywords.call().map{|row| Regexp.quote(row[:keyword]) })
 
@@ -41,21 +67,26 @@ get "/" do
     keys = row.keys.map{|k| k.to_s }
     res = Hash[*keys.zip(row.values).flatten]
 
-    locals["rows"] << { 
+    row = { 
       "res" => res,
       "reserved" => !row[:id].nil?,
       "filtered" => !conditions_re.match(row[:title]).nil?,
       "available" => row[:id].nil? && conditions_re.match(row[:title]).nil?,
       "matched" => row[:title].gsub(conditions_re){|m| "<span class=\"q\">#{m}</span>" },
       "new" => /【新】/ =~ row[:title],
-      "last" => /【終】/ =~ row[:title]
+      "last" => /【終】/ =~ row[:title],
     }
+    row["new_or_last"] = row["new"] || row["last"]
+    row["classes"] = determine_classes(row)
+    row["captions"] = determine_captions(row)
+    locals["rows"] << row
   end
   locals["count"] = {
     "all" => locals["rows"].count,
     "reserved" => locals["rows"].count{|i| i["reserved"] },
     "filtered" => locals["rows"].count{|i| i["filtered"] },
     "available" => locals["rows"].count{|i| i["available"] },
+    "new_or_last" => locals["rows"].count{|i| i["new_or_last"] },
     "by_type" => {
       "BS" => locals["rows"].count{|i| i["res"]["type"] == "BS" },
       "CS" => locals["rows"].count{|i| i["res"]["type"] == "CS" },

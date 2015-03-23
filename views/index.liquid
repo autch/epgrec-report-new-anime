@@ -1,9 +1,10 @@
 <div class="container table-responsive">
   <table class="table table-bordered table-condensed">
-    <thead><tr><th>開始時刻</th><th>チャンネル</th><th>番組名</th><th>番組内容</th></tr></thead>
+    <thead><tr><th style="min-width: 4em;">状態</th><th style="min-width: 8em;">開始時刻</th><th style="min-width: 10em;">チャンネル</th><th style="min-width: 20em;">番組名</th><th>番組内容</th></tr></thead>
     <tbody>
       {% for row in rows %}{% strip %}
-      <tr class="{%if row.available %}a {% endif %}{%if row.filtered %}f {% endif %}{%if row.reserved %}r {% endif %}prog-{{row.res.type}} {%if row.new %}n {% endif %}{% if row.last %}l {% endif %}">
+      <tr class="{{ row.classes }}">
+    <td>{% for cap in row.captions %}<span class="{{cap.class}}" title="{{cap.caption}}" aria-hidden="true"></span>{% endfor %}</td>
 	<td>{{row.res.starttime | date:"%m/%d %a %H:%M"}}</td>
 	<td>[{{row.res.type}}] {{row.res.name}}</td>
 	<td>{{row.matched}}{%unless row.filtered or row.reserved %} <button type="button" class="add-ignore-keyword btn btn-default btn-xs" data-toggle="modal" data-target="#add-keyword" data-add-keyword="{{row.matched}}"><span class="glyphicon glyphicon-remove"></span></button>{% endunless %}</td>
