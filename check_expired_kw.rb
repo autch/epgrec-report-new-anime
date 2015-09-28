@@ -19,56 +19,34 @@ DB = Sequel.connect(db_config["database_url"])
 DB["SET CHARACTER SET utf8"]
 DB["SET NAMES utf8"]
 
-keywords = DB[:Recorder_keywordTbl].select(:keyword).map{|i| i[:keyword] }
-kw_count = Hash[*keywords.zip([0] * keywords.count).flatten]
+no_reserve_kws = DB[:Recorder_keywordTbl].select(:keyword).
+	left_join(:Recorder_reserveTbl, :autorec => :id){|j, lj, js|
+		Sequel.qualify(j, :starttime) >= Sequel.function(:now) }.
+	where(:autorec => nil).order(:keyword)
 
-ignore_kw = DB[:ignore_keywords].where(:enabled => 1).select(:keyword).map{|i| i[:keyword] }
-ignore_count = Hash[*ignore_kw.zip([0] * ignore_kw.count).flatten]
+no_match_ignores = DB[:ignore_keywords].select(:keyword).
+	left_join(:Recorder_programTbl){|j, lj, js|
+		Sequel.ilike(:title, Sequel.join(['%', :keyword, '%'])) || 
+		Sequel.ilike(:description, Sequel.join(['%', :keyword, '%'])) }.
+	where(:id => nil).order(:keyword)
 
-DB[:Recorder_programTbl].where("starttime > NOW()").select(:title, :description).each do |row|
-  kws = keywords.select{|k| 
-    row[:title].include?(k) || row[:description].include?(k)
-  }
-  kws.each{|kw| kw_count[kw] += 1 } if kws
-
-  kws = ignore_kw.select{|k|
-    row[:title].include?(k) || row[:description].include?(k)
-  }
-  kws.each{|kw| ignore_count[kw] += 1 } if kws
-end
-
-# puts "予約キーワード,一致回数"
-# kw_count.sort_by{|i| i[1] }.each do |r|
-#   printf "%s,%d\n", r[0], r[1]
-# end
-
-# puts
-# puts "無視キーワード,一致回数"
-# ignore_count.sort_by{|i| i[1] }.each do |r|
-#   printf "%s,%d\n", r[0], r[1]
-# end
-
-#pp kw_count
-#pp ignore_count
+overkill_ignores = DB[:Recorder_programTbl].
+	select(Sequel.function(:count, :keyword).as(:c)).distinct.
+	select_more{group_concat(Sequel.lit("keyword ORDER BY keyword ASC SEPARATOR '|'")).as(:kw)}.
+	join(:ignore_keywords).
+	where{ 
+		Sequel.ilike(:title, Sequel.join(['%', :keyword, '%'])) || 
+		Sequel.ilike(:description, Sequel.join(['%', :keyword, '%'])) }.
+	group(:id).having{count(:c) > 1}
 
 puts "【一致なし予約キーワード】"
-puts kw_count.select{|k, v| v == 0 }.keys.join("\n")
+puts no_reserve_kws.map(:keyword).join("\n")
 
 puts
 puts "【一致なし無視キーワード】"
-puts ignore_count.select{|k, v| v == 0 }.keys.join("\n")
-
-overkill_ignores = []
-
-DB[:Recorder_programTbl].select(:title, :description).each do |row|
-  kws = ignore_kw.select{|k|
-    row[:title].include?(k) || row[:description].include?(k)
-  }
-  if kws.count > 1 then
-    overkill_ignores << kws
-  end
-end
+puts no_match_ignores.map(:keyword).join("\n")
 
 puts
 puts "【１番組に複数キーワードがマッチ】"
-overkill_ignores.uniq.each{|kws| p kws }
+puts overkill_ignores.map{|i| i[:kw].gsub(/[|]/, "\t") }.join("\n") 
+
