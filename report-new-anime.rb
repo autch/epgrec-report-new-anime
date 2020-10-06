@@ -24,7 +24,7 @@ configure do
     where(:c__name_en => :$category_name).where{p__starttime > :$starttime}.
     where(:ch__skip => 0).
     order(Sequel.asc(:p__starttime), Sequel.asc(:ch__channel_disc)).
-    select(:ch__name, :ch__channel_disc, :p__starttime, :p__title, :p__description, :r__id, :ch__type).
+    select(:ch__name, :ch__channel_disc, :p__starttime, :p__endtime, :p__title, :p__description, :r__id, :ch__type).
     prepare(:select, :select_programs)
   set :programs, programs
 
